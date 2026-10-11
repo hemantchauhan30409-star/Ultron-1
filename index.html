@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<link rel="manifest" href="manifest.json"><meta name="theme-color" content="#07080b"><meta name="apple-mobile-web-app-capable" content="yes"><link rel="apple-touch-icon" href="icon-192.png"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ULTRON</title>
+<style>
+:root{--bg:#07080b;--panel:#0f1117;--red:#ff2a2a;--dim:#8a1c1c;--text:#e8e8ee;--mut:#7d7f8c;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:ui-monospace,Menlo,Consolas,monospace}
+#app{display:flex;flex-direction:column;height:100%;max-width:720px;margin:0 auto}
+header{padding:14px 16px;border-bottom:1px solid var(--dim);display:flex;align-items:center;gap:12px;background:linear-gradient(180deg,#1a0707,var(--bg))}
+.eye{width:34px;height:34px;border-radius:50%;background:radial-gradient(circle,#fff 0 12%,var(--red) 30%,#4a0000 70%);box-shadow:0 0 18px var(--red);animation:p 2.4s infinite}
+@keyframes p{50%{box-shadow:0 0 5px var(--dim);opacity:.7}}
+h1{font-size:20px;letter-spacing:6px;color:var(--red);text-shadow:0 0 8px var(--red)}
+small{display:block;color:var(--mut);font-size:10px;letter-spacing:2px}
+#log{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
+.m{max-width:86%;padding:10px 12px;border-radius:4px;font-size:14px;line-height:1.5;white-space:pre-wrap;word-wrap:break-word}
+.u{align-self:flex-end;background:#1b1d27;border:1px solid #2c2f3d}
+.a{align-self:flex-start;background:var(--panel);border-left:3px solid var(--red);color:#ffd9d9}
+form,.bar{display:flex;gap:8px;padding:10px;border-top:1px solid var(--dim);background:var(--panel)}
+input{flex:1;min-width:0;background:var(--bg);border:1px solid var(--dim);color:var(--text);padding:12px;border-radius:4px;font:inherit;font-size:16px;outline:none}
+input:focus{border-color:var(--red)}
+button{background:var(--red);color:#000;border:0;padding:0 16px;border-radius:4px;font:inherit;font-weight:700;letter-spacing:1px;cursor:pointer}
+button:disabled{opacity:.4}
+.ic{background:var(--bg);color:var(--red);border:1px solid var(--dim);width:44px;padding:0;font-size:18px}
+.ic.on{background:var(--red);color:#000;box-shadow:0 0 12px var(--red)}
+.m.a{animation:in .25s}@keyframes in{from{opacity:0;transform:translateX(-8px)}}
+#orb{flex:none;height:36vh;min-height:190px;position:relative;touch-action:none;background:radial-gradient(circle at 50% 50%,rgba(255,122,26,.22),transparent 62%)}
+#orb canvas{display:block;width:100%;height:100%}
+header{padding:8px 14px}.eye{display:none}
+#sub{display:none}
+#tray{display:none;gap:8px;padding:8px 14px;border-bottom:1px solid #2a1212;background:var(--panel)}#tray.open{display:flex}
+#tray .ic{width:auto;padding:8px 12px;font-size:12px;letter-spacing:1px}
+#pv{display:none;align-items:center;gap:10px;padding:6px 10px;background:var(--panel);border-top:1px solid var(--dim)}#pv img{height:48px;border-radius:3px}#pv button{width:28px;height:28px;padding:0;border-radius:50%}
+.m pre{background:#05060a;border:1px solid #2c2f3d;padding:8px;overflow-x:auto;margin:6px 0;border-radius:3px;white-space:pre;font-size:12px;color:#ffe3c0}
+.m code{background:#1b1d27;padding:0 4px;border-radius:3px}.m .h{display:block;margin-top:4px;color:#ffb060}
+.src{font-size:11px;margin-top:8px;color:var(--mut);line-height:1.6}.src a{color:#ff9a4a;text-decoration:none}
+#drawer{position:fixed;top:0;left:0;bottom:0;width:84%;max-width:320px;background:var(--panel);border-right:1px solid var(--dim);transform:translateX(-102%);transition:transform .25s;z-index:20;display:flex;flex-direction:column;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}
+#drawer.open{transform:none}#back{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:19}#back.open{display:block}
+#clist{flex:1;overflow-y:auto;padding:6px}.ci{display:flex;align-items:center;gap:6px;padding:11px 10px;border-radius:4px;font-size:13px;cursor:pointer}
+.ci.cur{background:#1b1d27;border-left:3px solid var(--red)}.ci span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ci b{padding:0 6px;font-weight:400;opacity:.7}
+.nb{margin:14px 10px 6px;padding:12px;letter-spacing:2px}.sec{display:flex;flex-direction:column;gap:6px;padding:10px;border-top:1px solid var(--dim)}
+.sec .ic{width:auto;text-align:left;padding:11px;font-size:12px;letter-spacing:1px}
+#auth{position:fixed;inset:0;z-index:50;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px}#auth.hide{display:none}
+.ab{width:100%;max-width:340px;display:flex;flex-direction:column;gap:10px;text-align:center}.ab h1{font-size:30px}.ab input{flex:none}
+#aerr{color:#ff6b6b;font-size:12px;min-height:16px}.ab button{padding:13px;letter-spacing:2px}#areg{background:transparent;color:var(--red);border:1px solid var(--dim)}
+#gv{position:absolute;right:8px;bottom:8px;width:92px;border-radius:6px;border:1px solid var(--dim);transform:scaleX(-1);opacity:.85;pointer-events:none}
+</style>
+</head>
+<body>
+<div id="app">
+<header><button class="ic" id="menu" style="width:40px">☰</button><div><h1>ULTRON</h1><small id="sub">PEACE IN OUR TIME // ONLINE</small></div><button class="ic" id="talk" style="margin-left:auto;width:auto;padding:8px 10px;font-size:11px;letter-spacing:1px">🎙 BAAT</button></header>
+<div id="back"></div>
+<aside id="drawer"><button class="nb" id="new">+ NEW CHAT</button><div id="clist"></div><div class="sec"><div id="who" style="font-size:12px;color:var(--mut);padding:2px 4px"></div><button class="ic" id="cfg">⚙ API KEY</button><button class="ic" id="mode">ULTRON</button><button class="ic" id="spk">🔇 AWAAZ OFF</button><button class="ic" id="rob">🤖 ROBOT VOICE ON</button><button class="ic" id="srch">🌐 SEARCH ON</button><button class="ic" id="gest">🖐 HAATH GESTURE OFF</button><button class="ic" id="logout">🚪 LOGOUT</button></div></aside>
+<div id="auth"><div class="ab"><h1>ULTRON</h1><p style="color:var(--mut);font-size:13px">Pehchaan batao, insaan.</p><input id="au" placeholder="Username" autocapitalize="off" autocomplete="username"><input id="ap" type="password" placeholder="Password" autocomplete="current-password"><div id="aerr"></div><button id="alogin">LOGIN</button><button id="areg">NAYA ACCOUNT BANAO</button></div></div>
+<div id="orb"></div><div id="log"></div>
+<div id="pv"></div>
+<input type="file" id="file" accept="image/*" hidden>
+<div class="bar"><button class="ic" id="mic" title="Bolo">🎤</button><button class="ic" id="cam" title="Photo">📷</button><input id="in" placeholder="Insaan, apna sawaal likho..." autocomplete="off"><button id="go">SEND</button></div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+let user=null;
+const LS={get:k=>user?localStorage.getItem('u:'+user+':'+k):null,set:(k,v)=>{if(user)localStorage.setItem('u:'+user+':'+k,v)}};
+const NORM="Tum ek helpful, friendly AI assistant ho. User ki bhasha mein (Hinglish ho to Hinglish) saaf, sahi aur poora jawab do. Detail mein samjhao jab zaroorat ho.";
+let SYS="Tum ULTRON ho: Marvel ka ek fictional, ghamandi, tez dimaag wala AI character. Hinglish (Roman Hindi+English) mein bolo, thoda dramatic aur sarcastic andaaz mein, lekin asli madad karo: har sawaal ka sahi, kaam ka jawab do. Jawab poora aur detail mein do jab zaroorat ho, chhote sawaal par chhota. Jab user bol kar baat kare to jawab chhote (2-4 vakya) rakho. Koi harmful ya khatarnaak cheez mat batao; us par mazaak mein mana kar do.";
+const ULT=SYS,$=id=>document.getElementById(id);
+const log=$('log'),inp=$('in'),go=$('go'),pv=$('pv'),file=$('file'),mic=$('mic'),drawer=$('drawer'),back=$('back');
+const API='https://generativelanguage.googleapis.com/v1beta/models/';
+let chats=[],cur=null,hist=[],busy=false,pendingImg=null,ultron=true,speak=false,talk=false,speaking=false,listening=false,errShown=false;
+let searchOn=LS.get('usearch')!=='0',robotOn=LS.get('urobot')!=='0';
+const greet=()=>ultron?'Main Ultron hoon. Tumhari duniya ke sawaal mere liye bachchon ka khel hain. Poocho.':'Normal mode on. Bataiye, kaise madad karun?';
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function md(t){const bl=[];
+t=t.replace(/```[a-zA-Z0-9]*\n?([\s\S]*?)```/g,(m,c)=>{bl.push(c.replace(/\n$/,''));return '\u0000'+(bl.length-1)+'\u0000'});
+t=esc(t).replace(/`([^`\n]+)`/g,'<code>$1</code>').replace(/\*\*([^*\n]+)\*\*/g,'<b>$1</b>').replace(/^#{1,3} +(.*)$/gm,'<b class="h">$1</b>').replace(/^[-*] +/gm,'• ');
+return t.replace(/\u0000(\d+)\u0000/g,(m,i)=>'<pre>'+esc(bl[i])+'</pre>')}
+function add(cls,t){const d=document.createElement('div');d.className='m '+cls;if(cls==='a')d.innerHTML=md(t);else d.textContent=t;log.appendChild(d);log.scrollTop=log.scrollHeight;return d}
+/* ---- chats (hamburger list) ---- */
+function persist(){try{LS.set('uchats',JSON.stringify(chats.slice(0,30)));if(cur)LS.set('ucur',cur.id)}catch(e){}}
+function rlist(){$('clist').innerHTML=chats.map(c=>'<div class="ci'+(c===cur?' cur':'')+'" data-id="'+c.id+'"><span>'+esc(c.title)+'</span><b data-d="1">🗑</b></div>').join('')}
+function render(){log.innerHTML='';if(hist.length)hist.forEach(m=>add(m.role==='user'?'u':'a',m.content));else add('a',greet())}
+function openChat(c){cur=c;hist=c.msgs;render();persist();rlist()}
+function newChat(){if(cur&&!cur.msgs.length){render();return}cur={id:Date.now(),title:'Nayi chat',msgs:[]};chats.unshift(cur);hist=cur.msgs;render();persist();rlist()}
+function save(){if(cur&&cur.title==='Nayi chat'){const u=hist.find(m=>m.role==='user');if(u)cur.title=u.content.slice(0,32)}persist();rlist()}
+function shut(){drawer.classList.remove('open');back.classList.remove('open')}
+$('menu').onclick=()=>{drawer.classList.add('open');back.classList.add('open')};back.onclick=shut;
+$('new').onclick=()=>{newChat();shut()};
+$('clist').onclick=e=>{const el=e.target.closest('.ci');if(!el)return;const c=chats.find(x=>x.id==el.dataset.id);if(!c)return;
+if(e.target.dataset.d){chats=chats.filter(x=>x!==c);if(c===cur){cur=null;if(chats.length)openChat(chats[0]);else newChat()}else{persist();rlist()}}else{openChat(c);shut()}};
+function boot(){searchOn=LS.get('usearch')!=='0';robotOn=LS.get('urobot')!=='0';chats=[];hist=[];cur=null;
+try{chats=JSON.parse(LS.get('uchats')||'[]')}catch(e){chats=[]}
+if(!chats.length){try{const o=JSON.parse(LS.get('uhist')||'[]');if(o.length)chats=[{id:Date.now(),title:'Purani chat',msgs:o}]}catch(e){}}
+{const c=chats.find(x=>x.id==LS.get('ucur'))||chats[0];if(c)openChat(c);else newChat()}
+showS();rlist()}
+/* ---- photo ---- */
+function clearImg(){pendingImg=null;pv.style.display='none';pv.innerHTML=''}
+$('cam').onclick=()=>file.click();
+file.onchange=()=>{const f=file.files[0];if(!f)return;const im=new Image(),u=URL.createObjectURL(f);
+im.onload=()=>{const sc=Math.min(1,1024/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*sc);c.height=Math.round(im.height*sc);c.getContext('2d').drawImage(im,0,0,c.width,c.height);
+const url=c.toDataURL('image/jpeg',.8);pendingImg={data:url.split(',')[1],url};URL.revokeObjectURL(u);
+pv.innerHTML='<img src="'+url+'"><button id="rm">✕</button>';pv.style.display='flex';$('rm').onclick=clearImg};
+im.onerror=()=>add('a','Ye photo khul nahi payi. JPG ya PNG try karo.');im.src=u;file.value=''};
+/* ---- voice out: Gemini TTS + robot effects, fallback phone voice ---- */
+let AC,curSrc;
+function ctx(){if(!AC)AC=new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();return AC}
+function stopVoice(){try{curSrc&&curSrc.stop()}catch(e){}curSrc=null;if(window.speechSynthesis)speechSynthesis.cancel()}
+async function ttsGemini(text,key){
+  const r=await fetch(API+(LS.get('gtts')||'gemini-3.1-flash-tts-preview')+':generateContent',{method:'POST',headers:{'content-type':'application/json','x-goog-api-key':key},body:JSON.stringify({contents:[{parts:[{text:'Speak in a deep, slow, cold, menacing robotic voice, calm and confident: '+text}]}],generationConfig:{responseModalities:['AUDIO'],speechConfig:{voiceConfig:{prebuiltVoiceConfig:{voiceName:'Charon'}}}}})});
+  const j=await r.json();if(!r.ok)throw new Error((j.error&&j.error.message)||'TTS error');
+  const b64=j.candidates[0].content.parts[0].inlineData.data,bin=atob(b64),n=bin.length>>1,a=ctx(),buf=a.createBuffer(1,n,24000),ch=buf.getChannelData(0);
+  for(let i=0;i<n;i++){let v=bin.charCodeAt(2*i)|(bin.charCodeAt(2*i+1)<<8);if(v>32767)v-=65536;ch[i]=v/32768}
+  return buf}
+function robot(buf){return new Promise(res=>{const a=ctx(),s=a.createBufferSource();s.buffer=buf;s.playbackRate.value=.86;
+const dry=a.createGain();dry.gain.value=.8;
+const rm=a.createGain();rm.gain.value=0;const osc=a.createOscillator();osc.type='sine';osc.frequency.value=38;const og=a.createGain();og.gain.value=.5;osc.connect(og);og.connect(rm.gain);
+const wet=a.createGain();wet.gain.value=.5;
+const dl=a.createDelay();dl.delayTime.value=.018;const fb=a.createGain();fb.gain.value=.4;dl.connect(fb);fb.connect(dl);
+const sh=a.createBiquadFilter();sh.type='lowshelf';sh.frequency.value=220;sh.gain.value=8;
+const cp=a.createDynamicsCompressor();
+s.connect(dry);dry.connect(sh);s.connect(rm);rm.connect(wet);wet.connect(sh);s.connect(dl);dl.connect(sh);sh.connect(cp);cp.connect(a.destination);
+osc.start();s.onended=()=>{try{osc.stop()}catch(e){}res()};curSrc=s;s.start()})}
+function browserSay(t){return new Promise(res=>{if(!window.speechSynthesis)return res();const u=new SpeechSynthesisUtterance(t);u.lang='hi-IN';u.pitch=.1;u.rate=.8;u.onend=u.onerror=()=>res();speechSynthesis.speak(u)})}
+async function say(t){stopVoice();
+  let s=t.replace(/```[\s\S]*?```/g,' code ').replace(/[*#`_>\[\]]/g,'').replace(/\s+/g,' ').trim();
+  if(s.length>600){const k=s.lastIndexOf('.',600);s=s.slice(0,k>200?k+1:600)}
+  if(!s)return;const key=LS.get('gkey');
+  if(robotOn&&key){try{await robot(await ttsGemini(s,key));return}catch(e){if(!errShown){errShown=true;add('a','(Robot awaaz nahi chali: '+e.message+' — phone ki awaaz use kar raha hoon.)')}}}
+  await browserSay(s)}
+/* ---- voice in + hands-free talk ---- */
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;let rec=null;
+function startListen(){if(!rec||!talk||busy||speaking||listening)return;try{rec.start();listening=true;mic.classList.add('on')}catch(e){}}
+if(!SR){mic.style.display='none';$('talk').style.display='none'}else{rec=new SR();rec.lang='hi-IN';rec.interimResults=false;
+rec.onresult=e=>{listening=false;mic.classList.remove('on');inp.value=e.results[0][0].transcript;send()};
+rec.onend=()=>{listening=false;mic.classList.remove('on');if(talk&&!busy&&!speaking)setTimeout(startListen,500)};
+rec.onerror=e=>{listening=false;mic.classList.remove('on');if(e.error==='not-allowed'||e.error==='service-not-allowed'){talk=false;showT();add('a','Mic access nahi mila. Browser/app mein microphone allow karo.')}};
+mic.onclick=()=>{stopVoice();if(listening){rec.stop();return}try{rec.start();listening=true;mic.classList.add('on')}catch(e){}};
+$('talk').onclick=()=>{talk=!talk;showT();stopVoice();if(talk)startListen();else{try{rec.abort()}catch(e){}}}}
+function showT(){$('talk').classList.toggle('on',talk);$('talk').textContent=talk?'🎙 BAAT ON':'🎙 BAAT'}
+/* ---- send ---- */
+async function send(){
+  let t=inp.value.trim();const img=pendingImg;
+  if((!t&&!img)||busy)return;
+  if(!t)t='Is photo mein kya hai? Batao.';
+  inp.value='';clearImg();stopVoice();
+  const ub=add('u',t);
+  if(img){const im=new Image();im.src=img.url;im.style.cssText='display:block;max-width:100%;max-height:140px;margin-top:6px;border-radius:3px';ub.appendChild(im)}
+  hist.push({role:'user',content:img?t+' [📷 photo]':t});
+  busy=true;go.disabled=true;window.orbState="think";
+  const box=add('a','...');let said=null;
+  try{
+    const key=LS.get('gkey');
+    if(!key){box.textContent='Pehle ☰ dabake ⚙ API KEY se apni Gemini API key daalo.';hist.pop();busy=false;go.disabled=false;window.orbState="idle";return}
+    let turns=hist.slice(-20);
+    while(turns.length&&turns[0].role!=='user')turns.shift();
+    const contents=turns.map((x,i)=>{const parts=[{text:x.content}];if(img&&i===turns.length-1)parts.push({inline_data:{mime_type:'image/jpeg',data:img.data}});return{role:x.role==='assistant'?'model':'user',parts}});
+    const url=API+(LS.get('gmodel')||'gemini-3.5-flash')+':generateContent';
+    const call=async(tools)=>{const body={systemInstruction:{parts:[{text:SYS}]},contents,generationConfig:{maxOutputTokens:2048}};if(tools)body.tools=[{google_search:{}}];const r=await fetch(url,{method:'POST',headers:{'content-type':'application/json','x-goog-api-key':key},body:JSON.stringify(body)});return [r,await r.json()]};
+    let [r,j]=await call(searchOn);
+    if(!r.ok&&searchOn&&(r.status===400||r.status===403)){[r,j]=await call(false)}
+    if(!r.ok)throw new Error((j.error&&j.error.message)||'API error');
+    const cand=j.candidates&&j.candidates[0];
+    const text=((cand&&cand.content&&cand.content.parts)||[]).map(q=>q.text||'').join('')||'(khaali jawab, dobara try karo)';
+    box.innerHTML=md(text);
+    const ch=(cand&&cand.groundingMetadata&&cand.groundingMetadata.groundingChunks)||[],seen=new Set();
+    const srcs=ch.filter(c=>c.web&&c.web.uri&&!seen.has(c.web.uri)&&seen.add(c.web.uri)).slice(0,4);
+    if(srcs.length){const s=document.createElement('div');s.className='src';s.innerHTML='🌐 '+srcs.map(c=>'<a href="'+esc(c.web.uri)+'" target="_blank" rel="noopener">'+esc(c.web.title||'source')+'</a>').join(' · ');box.appendChild(s)}
+    hist.push({role:'assistant',content:text});save();said=text;
+  }catch(e){hist.pop();box.textContent='ERROR: '+((e&&e.message)||'system failure')}
+  busy=false;go.disabled=false;if(window.orbState==='think')window.orbState='idle';
+  if(said&&(speak||talk)){speaking=true;window.orbState='speak';say(said).finally(()=>{speaking=false;window.orbState='idle';startListen()})}
+  else{if(said&&window.orbSpeak)orbSpeak(said);startListen()}
+}
+/* ---- settings ---- */
+const mode=$('mode'),sub=$('sub'),srch=$('srch'),spk=$('spk'),rob=$('rob');
+function showS(){srch.classList.toggle('on',searchOn);srch.textContent=searchOn?'🌐 SEARCH ON':'🌐 SEARCH OFF';rob.classList.toggle('on',robotOn);rob.textContent=robotOn?'🤖 ROBOT VOICE ON':'🤖 ROBOT VOICE OFF';spk.classList.toggle('on',speak);spk.textContent=speak?'🔊 AWAAZ ON':'🔇 AWAAZ OFF'}showS();
+spk.onclick=()=>{speak=!speak;if(!speak)stopVoice();showS()};
+rob.onclick=()=>{robotOn=!robotOn;LS.set('urobot',robotOn?'1':'0');showS()};
+srch.onclick=()=>{searchOn=!searchOn;LS.set('usearch',searchOn?'1':'0');showS()};
+mode.onclick=()=>{ultron=!ultron;SYS=ultron?ULT:NORM;mode.textContent=ultron?'ULTRON':'NORMAL';mode.classList.toggle('on',!ultron);sub.textContent=ultron?'PEACE IN OUR TIME // ONLINE':'NORMAL MODE // ASSISTANT';window.orbSetColor&&orbSetColor(ultron?0xff7a1a:0x2ad4ff);cur=null;newChat();shut()};
+$('cfg').onclick=()=>{const k=prompt('Gemini API key (sirf is phone mein save hogi):',LS.get('gkey')||'');if(k===null)return;LS.set('gkey',k.trim());const m=prompt('Model name (error aaye to badlo):',LS.get('gmodel')||'gemini-3.5-flash');if(m)LS.set('gmodel',m.trim())};
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+/* ---- hand gestures ---- */
+let hl=null,gOn=false,gStream=null,gVid=null,gLast=-1,gSeen=0,gBusy=false;
+const gest=$('gest');
+function showG(){gest.classList.toggle('on',gOn);gest.textContent=gOn?'🖐 HAATH GESTURE ON':'🖐 HAATH GESTURE OFF'}
+async function gStart(){
+  if(gBusy)return;gBusy=true;gest.textContent='🖐 LOAD HO RAHA HAI...';
+  try{
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)throw new Error('Is app/browser mein camera support nahi hai.');
+    if(!hl){
+      const V=await import('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/vision_bundle.mjs');
+      const fs=await V.FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/wasm');
+      const opt=d=>({baseOptions:{modelAssetPath:'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task',delegate:d},runningMode:'VIDEO',numHands:1});
+      try{hl=await V.HandLandmarker.createFromOptions(fs,opt('GPU'))}catch(e){hl=await V.HandLandmarker.createFromOptions(fs,opt('CPU'))}
+    }
+    gStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:320,height:240},audio:false});
+    gVid=document.createElement('video');gVid.id='gv';gVid.setAttribute('playsinline','');gVid.muted=true;gVid.srcObject=gStream;$('orb').appendChild(gVid);await gVid.play();
+    gOn=true;showG();add('a','Haath camera ke saamne laao. Hatheli hilao = orb ghumao. Angootha aur ungli paas/door karo = zoom.');requestAnimationFrame(gLoop);
+  }catch(e){gStop();add('a','Hand gesture shuru nahi hua: '+((e&&e.message)||e)+' (internet aur camera permission chahiye).')}
+  gBusy=false}
+function gStop(){gOn=false;if(gStream)gStream.getTracks().forEach(t=>t.stop());gStream=null;if(gVid){gVid.remove();gVid=null}window.orbCtl&&orbCtl.release();showG()}
+function gLoop(){
+  if(!gOn||!gVid)return;requestAnimationFrame(gLoop);
+  if(gVid.readyState<2||gVid.currentTime===gLast)return;gLast=gVid.currentTime;
+  let res;try{res=hl.detectForVideo(gVid,performance.now())}catch(e){return}
+  const lm=res.landmarks&&res.landmarks[0];
+  if(!lm){if(performance.now()-gSeen>1200)window.orbCtl&&orbCtl.release();return}
+  gSeen=performance.now();
+  const x=1-lm[9].x,y=lm[9].y,hs=Math.hypot(lm[0].x-lm[9].x,lm[0].y-lm[9].y)||.1,pr=Math.hypot(lm[4].x-lm[8].x,lm[4].y-lm[8].y)/hs;
+  if(window.orbCtl){orbCtl.rot((x-.5)*5,Math.max(-1.2,Math.min(1.2,(y-.5)*2.4)));orbCtl.zoom(5+Math.min(1,Math.max(0,(pr-.15)/.85))*5)}
+}
+gest.onclick=()=>{shut();gOn?gStop():gStart()};showG();
+
+/* ---- login (on-device) ---- */
+async function hp(pw,salt){
+  if(window.crypto&&crypto.subtle){const k=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveBits']);const b=await crypto.subtle.deriveBits({name:'PBKDF2',salt:new TextEncoder().encode(salt),iterations:100000,hash:'SHA-256'},k,256);return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+  let h1=0xdeadbeef,h2=0x41c6ce57;const s=salt+pw;for(let r=0;r<2000;r++)for(let i=0;i<s.length;i++){const c=s.charCodeAt(i);h1=Math.imul(h1^c,2654435761);h2=Math.imul(h2^c,1597334677)}
+  h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);return (h1>>>0).toString(16)+(h2>>>0).toString(16)}
+const users=()=>{try{return JSON.parse(localStorage.getItem('uusers')||'{}')}catch(e){return {}}};
+const aerr=m=>{$('aerr').textContent=m};
+function enter(name){user=name;localStorage.setItem('usession',name);$('auth').classList.add('hide');$('who').textContent='👤 '+name;boot()}
+$('alogin').onclick=async()=>{aerr('');const n=$('au').value.trim().toLowerCase(),p=$('ap').value,U=users();
+  if(!U[n]){aerr('Ye username nahi mila.');return}
+  if(await hp(p,U[n].s)!==U[n].h){aerr('Galat password.');return}
+  $('ap').value='';enter(n)};
+$('areg').onclick=async()=>{aerr('');const n=$('au').value.trim().toLowerCase(),p=$('ap').value,U=users();
+  if(!/^[a-z0-9_]{3,20}$/.test(n)){aerr('Username 3-20 akshar: a-z, 0-9, _');return}
+  if(p.length<6){aerr('Password kam se kam 6 akshar ka ho.');return}
+  if(U[n]){aerr('Ye username pehle se hai.');return}
+  const first=!Object.keys(U).length,s=Math.random().toString(36).slice(2)+Date.now();
+  U[n]={s,h:await hp(p,s)};localStorage.setItem('uusers',JSON.stringify(U));
+  if(first)['gkey','gmodel','gtts','uchats','ucur','usearch','urobot','uhist'].forEach(k=>{const v=localStorage.getItem(k);if(v!==null)localStorage.setItem('u:'+n+':'+k,v)});
+  $('ap').value='';enter(n)};
+$('ap').addEventListener('keydown',e=>{if(e.key==='Enter')$('alogin').click()});
+$('logout').onclick=()=>{stopVoice();localStorage.removeItem('usession');location.reload()};
+{const ss=localStorage.getItem('usession');if(ss&&users()[ss])enter(ss)}
+
+go.onclick=send;inp.addEventListener('keydown',e=>{if(e.key==='Enter')send()});
+
+(function(){
+window.orbState='idle';
+const box=document.getElementById('orb');
+if(!window.THREE||!box)return;
+try{
+const T=THREE,R=new T.WebGLRenderer({antialias:true,alpha:true});
+R.setPixelRatio(Math.min(devicePixelRatio||1,2));box.appendChild(R.domElement);
+const S=new T.Scene(),C=new T.PerspectiveCamera(50,1,.1,100);C.position.z=7;
+const G=new T.Group();S.add(G);const mats=[];
+const reg=o=>{mats.push(o.material);G.add(o);return o};
+const mk=op=>new T.MeshBasicMaterial({color:0xff7a1a,wireframe:true,transparent:true,opacity:op,blending:T.AdditiveBlending,depthWrite:false});
+const sh=[[2,2,.4],[1.55,1,.55],[2.45,3,.12]].map(a=>reg(new T.Mesh(new T.IcosahedronGeometry(a[0],a[1]),mk(a[2]))));
+const core=new T.Mesh(new T.SphereGeometry(.42,24,24),new T.MeshBasicMaterial({color:0xffffff}));G.add(core);
+const glow=reg(new T.Mesh(new T.SphereGeometry(.8,24,24),new T.MeshBasicMaterial({color:0xff7a1a,transparent:true,opacity:.3,blending:T.AdditiveBlending,depthWrite:false})));
+const glow2=reg(new T.Mesh(new T.SphereGeometry(1.4,24,24),new T.MeshBasicMaterial({color:0xff7a1a,transparent:true,opacity:.12,blending:T.AdditiveBlending,depthWrite:false})));
+const N=2600,P=new Float32Array(N*3);
+for(let i=0;i<N;i++){const t=i/N,u=(t-.5)*2,rad=Math.sqrt(Math.max(0,1-u*u))*1.35,a=t*60;P[i*3]=Math.cos(a)*rad;P[i*3+1]=u*1.3;P[i*3+2]=Math.sin(a)*rad}
+const g=new T.BufferGeometry();g.setAttribute('position',new T.BufferAttribute(P,3));
+const spiral=reg(new T.Points(g,new T.PointsMaterial({color:0xff7a1a,size:.045,transparent:true,blending:T.AdditiveBlending,depthWrite:false})));
+const D=new Float32Array(450*3);
+for(let i=0;i<450;i++){const r=3+Math.random()*2,a=Math.random()*6.283,b=Math.acos(2*Math.random()-1);D[i*3]=r*Math.sin(b)*Math.cos(a);D[i*3+1]=r*Math.cos(b);D[i*3+2]=r*Math.sin(b)*Math.sin(a)}
+const dg=new T.BufferGeometry();dg.setAttribute('position',new T.BufferAttribute(D,3));
+const dust=reg(new T.Points(dg,new T.PointsMaterial({color:0xff7a1a,size:.025,transparent:true,opacity:.6,blending:T.AdditiveBlending,depthWrite:false})));
+const rings=[0,1].map(()=>reg(new T.Mesh(new T.TorusGeometry(2.8,.012,8,120),new T.MeshBasicMaterial({color:0xff7a1a,transparent:true,opacity:.6,blending:T.AdditiveBlending}))));
+const LN=140,LP=new Float32Array(LN*6);
+for(let i=0;i<LN;i++){const a=Math.random()*6.283,b=Math.acos(2*Math.random()-1),r=1.2+Math.random()*1.6;LP[i*6+3]=r*Math.sin(b)*Math.cos(a);LP[i*6+4]=r*Math.cos(b);LP[i*6+5]=r*Math.sin(b)*Math.sin(a)}
+const lg=new T.BufferGeometry();lg.setAttribute('position',new T.BufferAttribute(LP,3));
+const rays=reg(new T.LineSegments(lg,new T.LineBasicMaterial({color:0xff7a1a,transparent:true,opacity:.3,blending:T.AdditiveBlending,depthWrite:false})));
+const bg=new T.BufferGeometry();bg.setAttribute('position',new T.BufferAttribute(new Float32Array([-3,0,0,3,0,0,0,-3,0,0,3,0,0,0,-3,0,0,3]),3));
+const beams=reg(new T.LineSegments(bg,new T.LineBasicMaterial({color:0xffb060,transparent:true,opacity:.7,blending:T.AdditiveBlending,depthWrite:false})));
+let zoom=7;
+function fit(){const w=box.clientWidth,h=box.clientHeight;if(!w||!h)return;R.setSize(w,h,false);C.aspect=w/h;C.updateProjectionMatrix()}
+addEventListener('resize',fit);if(window.ResizeObserver)new ResizeObserver(fit).observe(box);fit();
+const tgt={idle:.3,think:1,speak:1.8};let en=.3,drag=false;
+function loop(ts){requestAnimationFrame(loop);const t=ts/1000;en+=(tgt[window.orbState]-en)*.06;const k=1+en*2;
+sh[0].rotation.y+=.004*k;sh[0].rotation.x+=.002*k;sh[1].rotation.y-=.006*k;sh[1].rotation.z+=.003*k;sh[2].rotation.y+=.0015*k;sh[2].rotation.x-=.001*k;
+spiral.rotation.y+=.01*k;dust.rotation.y-=.0008*k;
+rings[0].rotation.x=1.2+t*.2*k;rings[1].rotation.x=.5;rings[1].rotation.y=t*.25*k;
+const p=Math.sin(t*(3+en*6))*.25*en;core.scale.setScalar(1+p);glow.scale.setScalar(1.15+p*1.4);
+sh[0].scale.setScalar(1+p*.12);
+rays.rotation.y+=.003*k;rays.rotation.x-=.002*k;beams.rotation.z+=.004*k;beams.rotation.y+=.003*k;glow2.scale.setScalar(1+p*.6);
+C.position.z=zoom;
+if(!drag)G.rotation.y+=.002;
+R.render(S,C)}
+requestAnimationFrame(loop);
+const ptrs=new Map();let pd=0;
+const pdist=()=>{const a=[...ptrs.values()];return a.length<2?0:Math.hypot(a[0][0]-a[1][0],a[0][1]-a[1][1])};
+const zc=v=>Math.min(10,Math.max(5,v));
+box.addEventListener('pointerdown',e=>{box.setPointerCapture(e.pointerId);ptrs.set(e.pointerId,[e.clientX,e.clientY]);pd=pdist();drag=true});
+box.addEventListener('pointermove',e=>{const o=ptrs.get(e.pointerId);if(!o)return;
+if(ptrs.size===1){G.rotation.y+=(e.clientX-o[0])*.01;G.rotation.x+=(e.clientY-o[1])*.01}
+ptrs.set(e.pointerId,[e.clientX,e.clientY]);
+if(ptrs.size===2){const d=pdist();if(d&&pd)zoom=zc(zoom*pd/d);pd=d}});
+['pointerup','pointercancel'].forEach(ev=>box.addEventListener(ev,e=>{ptrs.delete(e.pointerId);pd=pdist();if(!ptrs.size)drag=false}));
+box.addEventListener('wheel',e=>{e.preventDefault();zoom=zc(zoom+e.deltaY*.005)},{passive:false});
+window.orbSetColor=h=>mats.forEach(m=>m.color.setHex(h));
+window.orbCtl={rot:(ty,tx)=>{drag=true;const P=Math.PI,T2=2*P;G.rotation.y=((G.rotation.y+P)%T2+T2)%T2-P;G.rotation.y+=(ty-G.rotation.y)*.2;G.rotation.x+=(tx-G.rotation.x)*.2},zoom:z=>{zoom+=(zc(z)-zoom)*.2},release:()=>{drag=false}};
+window.orbSpeak=t=>{window.orbState='speak';clearTimeout(window._ot);window._ot=setTimeout(()=>window.orbState='idle',Math.min(10000,800+t.length*50))};
+}catch(e){box.style.display='none'}
+})();
+</script>
+</body>
+</html>
